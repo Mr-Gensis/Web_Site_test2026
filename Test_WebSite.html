@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ravens Marching Band — Kinetic Elite UI/UX Prototype</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Barlow Condensed, JetBrains Mono, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,800;0,900;1,800&family=JetBrains+Mono:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            void: '#020203',
+            obsidian: '#0B0C10',
+            carbon: '#12141A',
+            gold: {
+              primary: '#FFD700',
+              brushed: '#D4AF37',
+              muted: 'rgba(212, 175, 55, 0.15)',
+            },
+            stealth: '#8A8F9E',
+            crimson: '#FF2E4C',
+          },
+          fontFamily: {
+            display: ['Barlow Condensed', 'sans-serif'],
+            telemetry: ['JetBrains Mono', 'monospace'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          boxShadow: {
+            'gold-glow': '0 0 25px rgba(255, 215, 0, 0.25)',
+            'gold-bright': '0 0 35px rgba(255, 215, 0, 0.5)',
+            'crimson-glow': '0 0 20px rgba(255, 46, 76, 0.4)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="tactical-grid-bg antialiased selection:bg-gold-primary selection:text-black min-h-screen flex flex-col justify-between">
+
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <header class="sticky top-0 z-40 bg-obsidian/90 backdrop-blur-md border-b border-gold-brushed/30 px-4 lg:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Brand Crest & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gold-primary/10 border border-gold-primary flex items-center justify-center text-gold-primary clip-tactical-btn font-black text-xl shadow-gold-glow">
+          <i class="fa-solid font-bold fa-crow"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display font-black text-xl lg:text-2xl tracking-wider text-white uppercase">
+              RAVENS <span class="text-gold-primary">MARCHING BAND</span>
+            </span>
+            <span class="hidden md:inline-block px-2 py-0.5 text-[10px] font-telemetry bg-gold-primary/20 text-gold-primary border border-gold-primary/40 rounded-sm">
+              KINETIC ELITE v3.0
+            </span>
+          </div>
+          <p class="text-[10px] font-telemetry text-stealth tracking-widest hidden sm:block">
+            ATHLETIC PRECISION &bull; TACTICAL DRILL MATRIX
+          </p>
+        </div>
+      </div>
+
+      <!-- Real-time Telemetry Status Widget -->
+      <div class="hidden lg:flex items-center gap-4 font-telemetry text-xs">
+        <div class="flex items-center gap-2 bg-void px-3 py-1.5 border border-gold-brushed/20 rounded">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 hud-pulse"></span>
+          <span class="text-stealth">TEMPO:</span>
+          <span id="liveBpm" class="text-gold-primary font-bold">144 BPM</span>
+        </div>
+
+        <div class="flex items-center gap-2 bg-void px-3 py-1.5 border border-gold-brushed/20 rounded">
+          <i class="fa-solid fa-volume-high text-gold-brushed text-xs"></i>
+          <span class="text-stealth">SOUND:</span>
+          <span id="liveDb" class="text-white font-bold">118.5 dB</span>
+        </div>
+
+        <div class="flex items-center gap-2 bg-void px-3 py-1.5 border border-gold-brushed/20 rounded">
+          <i class="fa-solid fa-compass text-gold-brushed text-xs"></i>
+          <span class="text-stealth">DRILL:</span>
+          <span class="text-gold-primary font-bold">8-TO-5 STD</span>
+        </div>
+
+        <div class="flex items-center gap-2 bg-void px-3 py-1.5 border border-gold-brushed/20 rounded">
+          <span class="text-stealth">COUNT:</span>
+          <span id="liveCount" class="text-emerald-400 font-bold">COUNT 01</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="#auditions" class="hidden sm:inline-flex clip-tactical-btn bg-void border border-gold-primary text-gold-primary hover:bg-gold-primary hover:text-black font-display font-extrabold px-4 py-2 text-xs tracking-wider transition-all">
+          <i class="fa-solid fa-user-plus mr-1.5"></i> AUDICIONES
+        </a>
+        
+        <button 
+          id="navToggleBtn"
+          onclick="toggleCommandNav()" 
+          class="clip-tactical-btn bg-gold-primary hover:bg-white text-black font-display font-extrabold px-4 sm:px-5 py-2.5 transition-all duration-300 flex items-center gap-2 shadow-gold-glow cursor-pointer uppercase text-sm tracking-wider">
+          <i class="fa-solid fa-bars-staggered text-base"></i>
+          <span class="hidden sm:inline">NAVEGACIÓN</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <div id="commandNavDrawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
+    <!-- Backdrop -->
+    <div id="navBackdrop" onclick="toggleCommandNav()" class="absolute inset-0 bg-void/80 backdrop-blur-md"></div>
+    
+    <!-- Drawer Content Panel -->
+    <div id="navPanel" class="absolute right-0 top-0 bottom-0 w-full max-w-xl bg-obsidian border-l-2 border-gold-primary p-6 sm:p-10 transform translate-x-full transition-transform duration-500 ease-out flex flex-col justify-between overflow-y-auto">
+      
+      <div>
+        <!-- Drawer Header -->
+        <div class="flex items-center justify-between pb-6 border-b border-gold-brushed/20 mb-8">
+          <div>
+            <span class="font-telemetry text-xs text-gold-primary tracking-widest block">// NAVEGACIÓN TÁCTICA</span>
+            <h2 class="font-display font-black text-3xl text-white tracking-wider">CENTRO INSTITUCIONAL</h2>
+          </div>
+          <button onclick="toggleCommandNav()" class="w-10 h-10 rounded-none bg-void border border-gold-brushed/30 text-white hover:text-gold-primary flex items-center justify-center transition-colors">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4 font-display">
+          
+          <!-- Item 01: Acerca de Nosotros -->
+          <div class="bg-void border border-gold-brushed/20 p-4 transition-all hover:border-gold-primary">
+            <button onclick="toggleNavAccordion('acc1')" class="w-full flex items-center justify-between text-left">
+              <div class="flex items-center gap-4">
+                <span class="font-telemetry text-gold-primary font-bold text-lg">01.</span>
+                <span class="font-black text-xl text-white tracking-wide uppercase">ACERCA DE NOSOTROS</span>
+              </div>
+              <i id="acc1-icon" class="fa-solid fa-chevron-down text-gold-brushed text-sm transition-transform duration-300"></i>
+            </button>
+            <div id="acc1-content" class="hidden mt-4 pt-3 border-t border-white/10 font-sans text-sm text-stealth leading-relaxed">
+              <p class="mb-2 font-semibold text-white">"Maquinaria cinético-acústica de alto rendimiento."</p>
+              Ravens Marching Band fusiona la disciplina atlética militar de las bandas de marcha modernas de nivel mundial con la potencia e impacto visual de un show de entretenimiento de estadio. Cada paso está calculado al milímetro; cada nota afinada con exactitud.
+            </div>
+          </div>
+
+          <!-- Item 02: Objetivos Estratégicos -->
+          <div class="bg-void border border-gold-brushed/20 p-4 transition-all hover:border-gold-primary">
+            <button onclick="toggleNavAccordion('acc2')" class="w-full flex items-center justify-between text-left">
+              <div class="flex items-center gap-4">
+                <span class="font-telemetry text-gold-primary font-bold text-lg">02.</span>
+                <span class="font-black text-xl text-white tracking-wide uppercase">OBJETIVOS ESTRATÉGICOS (KPIs)</span>
+              </div>
+              <i id="acc2-icon" class="fa-solid fa-chevron-down text-gold-brushed text-sm transition-transform duration-300"></i>
+            </button>
+            <div id="acc2-content" class="hidden mt-4 pt-3 border-t border-white/10 font-sans text-sm text-stealth space-y-2">
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-bullseye text-gold-primary mt-1 text-xs"></i>
+                <p><strong class="text-white">Precisión de Drill:</strong> Desviación máxima &lt; 0.05 cm en formaciones complejas con telemetría en video.</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-heart-pulse text-gold-primary mt-1 text-xs"></i>
+                <p><strong class="text-white">Resistencia Aeróbica:</strong> Sostener rutina continua de 140-160 BPM por más de 12 minutos sin degradación sonora.</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <i class="fa-solid fa-bolt text-gold-primary mt-1 text-xs"></i>
+                <p><strong class="text-white">Presión Acústica:</strong> Ejecución limpia superando los 115 dB en campo abierto.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item 03: Visión Horizon 2028 -->
+          <div class="bg-void border border-gold-brushed/20 p-4 transition-all hover:border-gold-primary">
+            <button onclick="toggleNavAccordion('acc3')" class="w-full flex items-center justify-between text-left">
+              <div class="flex items-center gap-4">
+                <span class="font-telemetry text-gold-primary font-bold text-lg">03.</span>
+                <span class="font-black text-xl text-white tracking-wide uppercase">VISIÓN (HORIZONTE 2028)</span>
+              </div>
+              <i id="acc3-icon" class="fa-solid fa-chevron-down text-gold-brushed text-sm transition-transform duration-300"></i>
+            </button>
+            <div id="acc3-content" class="hidden mt-4 pt-3 border-t border-white/10 font-sans text-sm text-stealth leading-relaxed">
+              Consolidarse como la franquicia número uno en América Latina y referente global en el formato <em class="text-gold-brushed">Marching Band & Drum Corps Style</em>, redefiniendo el espectáculo en vivo mediante la unión indiscutible entre capacidad atlética y excelencia musical.
+            </div>
+          </div>
+
+          <!-- Item 04: Misión -->
+          <div class="bg-void border border-gold-brushed/20 p-4 transition-all hover:border-gold-primary">
+            <button onclick="toggleNavAccordion('acc4')" class="w-full flex items-center justify-between text-left">
+              <div class="flex items-center gap-4">
+                <span class="font-telemetry text-gold-primary font-bold text-lg">04.</span>
+                <span class="font-black text-xl text-white tracking-wide uppercase">MISIÓN DE CAMPO</span>
+              </div>
+              <i id="acc4-icon" class="fa-solid fa-chevron-down text-gold-brushed text-sm transition-transform duration-300"></i>
+            </button>
+            <div id="acc4-content" class="hidden mt-4 pt-3 border-t border-white/10 font-sans text-sm text-stealth leading-relaxed">
+              Transmutar cientos de horas de riguroso entrenamiento en una exhibición perfecta de sincronía, energía pura y arte sonoro, transformando a cada integrante en un atleta-músico de alto nivel.
+            </div>
+          </div>
+
+          <!-- Item 05: Valores (Raven Code) -->
+          <div class="bg-void border border-gold-brushed/20 p-4 transition-all hover:border-gold-primary">
+            <button onclick="toggleNavAccordion('acc5')" class="w-full flex items-center justify-between text-left">
+              <div class="flex items-center gap-4">
+                <span class="font-telemetry text-gold-primary font-bold text-lg">05.</span>
+                <span class="font-black text-xl text-white tracking-wide uppercase">VALORES (RAVEN CODE)</span>
+              </div>
+              <i id="acc5-icon" class="fa-solid fa-chevron-down text-gold-brushed text-sm transition-transform duration-300"></i>
+            </button>
+            <div id="acc5-content" class="hidden mt-4 pt-3 border-t border-white/10 font-sans text-sm text-stealth space-y-2">
+              <p><strong class="text-gold-primary">1. Precision:</strong> El margen de error no existe.</p>
+              <p><strong class="text-gold-primary">2. Endurance:</strong> Preparación física olímpica para sostener el arte.</p>
+              <p><strong class="text-gold-primary">3. Synergy:</strong> Cuatro bloques operando como una sola mente.</p>
+              <p><strong class="text-gold-primary">4. Discipline:</strong> Respeto inquebrantable al uniforme, la jerarquía y el tempo.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="pt-6 border-t border-gold-brushed/20 mt-8 font-telemetry text-xs text-stealth flex items-center justify-between">
+        <span>ESTADO: COMANDO EN VIVO ACTIVO</span>
+        <button onclick="toggleCommandNav()" class="text-gold-primary underline hover:text-white">CERRAR PANEL [ESC]</button>
+      </div>
+
+    </div>
+  </div>
+
+  <section class="relative min-h-[85vh] flex items-center justify-center pt-12 pb-16 px-4 overflow-hidden border-b border-gold-brushed/20">
+    <!-- Background Video -->
+    <video id="heroVideo" class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline preload="auto" poster="Resource_band/Color_Guard_seccion.jpeg">
+      <source src="Resource_band/Hero_video.mp4" type="video/mp4">
+      <!-- Add additional sources (webm) if available -->
+    </video>
+    <div class="absolute inset-0 bg-black/45 pointer-events-none hero-overlay"></div>
+
+    <!-- Background Animated Graphic Glows -->
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-primary/5 rounded-full blur-3xl"></div>
+      <div class="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-crimson/10 rounded-full blur-2xl"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto w-full relative z-10 text-center hero-content">
+      
+      <!-- Top Badge -->
+      <div class="inline-flex items-center gap-3 bg-obsidian border border-gold-primary/40 px-4 py-1.5 mb-6 clip-badge shadow-gold-glow">
+        <span class="w-2 h-2 rounded-full bg-gold-primary hud-pulse"></span>
+        <span class="font-telemetry text-xs tracking-widest text-gold-primary uppercase font-bold">
+          ESPECTÁCULO CINÉTICO DE ALTO RENDIMIENTO
+        </span>
+      </div>
+
+      <!-- Main Title -->
+      <h1 class="font-display font-black text-6xl sm:text-8xl lg:text-9xl tracking-tight uppercase leading-none mb-6">
+        LA ARTESANÍA ATLÉTICA DE <br class="hidden sm:inline"/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-gold-primary to-gold-brushed">
+          PRECISIÓN Y POTENCIA
+        </span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="max-w-2xl mx-auto text-base sm:text-lg text-stealth font-sans mb-10 leading-relaxed">
+        Donde la potencia sonora de una banda de marcha mundial se fusiona con la exigencia atlética militar y la telemetría en vivo.
+      </p>
+
+      <!-- Action CTAs -->
+      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+        <a href="#section-selector" class="clip-tactical-btn bg-gold-primary text-black font-display font-black px-8 py-4 text-xl tracking-wider hover:bg-white hover:shadow-gold-bright transition-all transform hover:-translate-y-1">
+          EXPLORAR BLOQUES TÁCTICOS
+        </a>
+        <a href="#drill-matrix" class="clip-tactical-btn bg-void border border-gold-brushed/50 text-white font-display font-bold px-8 py-4 text-xl tracking-wider hover:border-gold-primary hover:text-gold-primary transition-all">
+          <i class="fa-solid fa-microchip mr-2 text-gold-primary"></i> VER TELEMETRÍA
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-16 text-left">
+        <div class="bg-obsidian/80 border border-gold-brushed/20 p-4 clip-tactical-card">
+          <span class="font-telemetry text-[10px] text-stealth block">// DRILL STEP SIZE</span>
+          <span class="font-display font-black text-3xl text-gold-primary">8:5 STD</span>
+          <span class="text-xs text-white/70 block mt-1">Pasos por 5 yardas</span>
+        </div>
+        <div class="bg-obsidian/80 border border-gold-brushed/20 p-4 clip-tactical-card">
+          <span class="font-telemetry text-[10px] text-stealth block">// SOUND PRESSURE</span>
+          <span class="font-display font-black text-3xl text-white">124 dB</span>
+          <span class="text-xs text-gold-brushed block mt-1">Pico acústico máx</span>
+        </div>
+        <div class="bg-obsidian/80 border border-gold-brushed/20 p-4 clip-tactical-card">
+          <span class="font-telemetry text-[10px] text-stealth block">// CADENCE SPEED</span>
+          <span id="cardBpmVal" class="font-display font-black text-3xl text-gold-primary">144 BPM</span>
+          <span class="text-xs text-white/70 block mt-1">Ataque de percusión</span>
+        </div>
+        <div class="bg-obsidian/80 border border-gold-brushed/20 p-4 clip-tactical-card">
+          <span class="font-telemetry text-[10px] text-stealth block">// FIELD MARGIN</span>
+          <span class="font-display font-black text-3xl text-white">&lt;0.05 cm</span>
+          <span class="text-xs text-emerald-400 block mt-1">Tolerancia de alineación</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="drill-matrix" class="py-16 px-4 border-b border-gold-brushed/20 bg-obsidian/50 relative">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-gold-brushed/20">
+        <div>
+          <span class="font-telemetry text-xs text-gold-primary tracking-widest block">// LIVE DRILL MATRIX TELEMETRY</span>
+          <h2 class="font-display font-black text-4xl sm:text-5xl text-white uppercase tracking-wider">
+            SIMULADOR DE CAMPO TÁCTICO
+          </h2>
+        </div>
+        <div class="mt-4 md:mt-0 flex flex-wrap items-center gap-2 font-telemetry text-xs">
+          <button onclick="setDrillFormation('diamond')" id="btn-f-diamond" class="drill-btn px-3 py-1.5 bg-gold-primary text-black font-bold clip-tactical-btn">DIAMOND</button>
+          <button onclick="setDrillFormation('wedge')" id="btn-f-wedge" class="drill-btn px-3 py-1.5 bg-void border border-gold-brushed text-white hover:border-gold-primary clip-tactical-btn">WEDGE</button>
+          <button onclick="setDrillFormation('star')" id="btn-f-star" class="drill-btn px-3 py-1.5 bg-void border border-gold-brushed text-white hover:border-gold-primary clip-tactical-btn">STAR</button>
+          <button onclick="setDrillFormation('box')" id="btn-f-box" class="drill-btn px-3 py-1.5 bg-void border border-gold-brushed text-white hover:border-gold-primary clip-tactical-btn">BOX</button>
+          <button onclick="setDrillFormation('spiral')" id="btn-f-spiral" class="drill-btn px-3 py-1.5 bg-void border border-gold-brushed text-white hover:border-gold-primary clip-tactical-btn">SPIRAL</button>
+        </div>
+      </div>
+
+      <div class="relative bg-void border-2 border-gold-brushed/30 p-2 sm:p-4 rounded-none shadow-2xl overflow-hidden">
+        
+        <!-- Canvas HUD Overlay -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-obsidian/90 p-3 mb-3 border border-gold-primary/30 font-telemetry text-xs">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-gold-primary hud-pulse"></span>
+            <span class="text-white">FORMACIÓN: <span id="currentFormationText" class="text-gold-primary font-bold">DIAMOND OPENING</span></span>
+          </div>
+
+          <!-- Metronome & Speed Slider Controls -->
+          <div class="flex items-center gap-4 flex-wrap">
+            <div class="flex items-center gap-2">
+              <span class="text-stealth">TEMPO:</span>
+              <input 
+                type="range" 
+                id="bpmSlider" 
+                min="100" 
+                max="200" 
+                value="144" 
+                oninput="updateBpmTempo(this.value)"
+                class="accent-gold-primary w-24 sm:w-32 cursor-pointer h-1.5 bg-carbon rounded-none">
+              <span id="bpmSliderVal" class="text-gold-primary font-bold w-14">144 BPM</span>
+            </div>
+
+            <button 
+              id="metronomeBtn"
+              onclick="toggleMetronomeAudio()" 
+              class="clip-tactical-btn px-3 py-1 bg-void border border-gold-primary text-gold-primary hover:bg-gold-primary hover:text-black font-bold transition-all flex items-center gap-1.5">
+              <i id="metronomeIcon" class="fa-solid fa-drum text-xs"></i>
+              <span id="metronomeLabel">METRÓNOMO AUDIO</span>
+            </button>
+          </div>
+
+          <div class="text-stealth hidden sm:block">
+            STEP COUNT: <span id="stepCounterBadge" class="text-emerald-400 font-bold">1 / 16</span>
+          </div>
+        </div>
+
+        <!-- HTML5 Canvas for Field Drill -->
+        <canvas id="drillCanvas" class="w-full h-[320px] sm:h-[450px] bg-[#050608] cursor-crosshair block"></canvas>
+      
+        <!-- Bottom Legend -->
+        <div class="mt-3 flex flex-wrap items-center justify-between font-telemetry text-xs text-stealth pt-2 border-t border-white/10 gap-2">
+          <div class="flex items-center gap-4 flex-wrap">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> Color Guard (24)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Percusión (32)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-yellow-300"></span> Vientos (71)</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-white"></span> Drum Major (1)</span>
+          </div>
+          <span class="text-[10px] hidden md:inline">// HAGA CLIC EN CUALQUIER PUNTO DEL CAMPO PARA REORIENTAR EL CENTRO DE FORMACIÓN</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="section-selector" class="py-20 px-4 max-w-7xl mx-auto w-full">
+    
+    <!-- Title -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <span class="font-telemetry text-xs text-gold-primary tracking-widest block uppercase">// ATHLETE & SECTION SPECS</span>
+      <h2 class="font-display font-black text-5xl sm:text-6xl text-white tracking-wider uppercase mb-3">
+        EXHIBICIÓN INTERACTIVA DE BLOQUES
+      </h2>
+      <p class="text-stealth text-sm sm:text-base">
+        Selecciona cada componente táctico para examinar telemetría en tiempo real, despiece técnico y síntesis de audio reactiva.
+      </p>
+    </div>
+
+    <!-- Section Switcher Buttons Tabs -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+      
+      <button onclick="selectBlock('colorguard')" id="btn-colorguard" class="block-tab-btn clip-tactical-btn py-4 px-4 bg-gold-primary text-black font-display font-black text-xl tracking-wider uppercase border border-gold-primary transition-all flex flex-col items-center gap-1 shadow-gold-glow">
+        <i class="fa-solid fa-flag text-lg"></i>
+        <span>01. COLOR GUARD</span>
+      </button>
+
+      <button onclick="selectBlock('percussion')" id="btn-percussion" class="block-tab-btn clip-tactical-btn py-4 px-4 bg-void text-white font-display font-bold text-xl tracking-wider uppercase border border-gold-brushed/30 hover:border-gold-primary transition-all flex flex-col items-center gap-1">
+        <i class="fa-solid fa-drum text-lg"></i>
+        <span>02. PERCUSIÓN</span>
+      </button>
+
+      <button onclick="selectBlock('brass')" id="btn-brass" class="block-tab-btn clip-tactical-btn py-4 px-4 bg-void text-white font-display font-bold text-xl tracking-wider uppercase border border-gold-brushed/30 hover:border-gold-primary transition-all flex flex-col items-center gap-1">
+        <i class="fa-solid fa-record-vinyl text-lg"></i>
+        <span>03. VIENTOS</span>
+      </button>
+
+      <button onclick="selectBlock('drummajor')" id="btn-drummajor" class="block-tab-btn clip-tactical-btn py-4 px-4 bg-void text-white font-display font-bold text-xl tracking-wider uppercase border border-gold-brushed/30 hover:border-gold-primary transition-all flex flex-col items-center gap-1">
+        <i class="fa-solid fa-user-ninja text-lg"></i>
+        <span>04. BASTÓN MAYOR</span>
+      </button>
+
+    </div>
+
+    <!-- MAIN BLOCK DISPLAY CARD (DYNAMIC CONTENT) -->
+    <div class="bg-obsidian border-2 border-gold-primary p-6 sm:p-10 clip-tactical-card transition-all duration-500 shadow-2xl relative">
+      
+      <!-- Top Decorative Angle HUD -->
+      <div class="absolute top-0 right-0 bg-gold-primary text-black font-telemetry font-bold text-[11px] px-4 py-1 uppercase tracking-widest clip-badge">
+        SECTION INSPECTOR ACTIVE
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <div class="lg:col-span-7 space-y-6">
+          
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <span id="blockNumber" class="font-telemetry text-2xl font-extrabold text-gold-primary">01</span>
+              <span class="h-px bg-gold-brushed/30 flex-1"></span>
+              <span id="blockBadge" class="font-telemetry text-xs px-2.5 py-1 bg-gold-primary/10 border border-gold-primary/40 text-gold-primary rounded">
+                VISUAL ARTISTRY
+              </span>
+            </div>
+            
+            <h3 id="blockTitle" class="font-display font-black text-4xl sm:text-5xl text-white tracking-wide uppercase">
+              COLOR GUARD
+            </h3>
+            <p id="blockTagline" class="font-telemetry text-sm text-gold-brushed italic mt-1">
+              "Velocidad, flexibilidad e impacto visual cinético"
+            </p>
+          </div>
+
+          <p id="blockDescription" class="text-stealth text-sm sm:text-base leading-relaxed">
+            Extensión visual de la música. Encargadas de traducir frecuencias y dinámicas musicales en movimiento espacial continuo mediante el dominio de banderas, rifles y sables.
+          </p>
+
+          <!-- Audio Reactivity & Waveform Controller Panel -->
+          <div class="bg-void border border-gold-brushed/30 p-4 clip-tactical-card space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-wave-square text-gold-primary"></i>
+                <span class="font-telemetry text-xs text-white uppercase font-bold">MUESTRA DE AUDIO TELESINTETIZADO</span>
+              </div>
+              <span id="audioStatusText" class="font-telemetry text-[10px] text-stealth">EN ESPERA</span>
+            </div>
+
+            <!-- Waveform Canvas -->
+            <div class="relative h-16 bg-black/60 border border-gold-brushed/20 overflow-hidden flex items-center justify-center">
+              <canvas id="waveformCanvas" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- Audio Play Trigger Button -->
+            <div class="flex items-center justify-between pt-1">
+              <button 
+                id="playAudioBtn"
+                onclick="triggerSectionAudio()" 
+                class="clip-tactical-btn bg-gold-primary hover:bg-white text-black font-display font-black px-5 py-2 text-sm tracking-wider transition-all flex items-center gap-2">
+                <i id="playAudioIcon" class="fa-solid fa-play"></i>
+                <span id="playAudioLabel">ESCUCHAR STEM TÁCTICO</span>
+              </button>
+
+              <span class="font-telemetry text-[10px] text-stealth">
+                SYNTH ENGINE: <span class="text-gold-brushed">WEB AUDIO API</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Technical Breakdown Grid -->
+          <div>
+            <h4 class="font-display font-bold text-lg text-white uppercase mb-3 tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-gold-primary text-sm"></i>
+              <span>DESPIECE TÉCNICO DE EQUIPAMIENTO</span>
+            </h4>
+            
+            <div id="equipmentGrid" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <div class="lg:col-span-5 bg-void border border-gold-brushed/30 p-6 clip-tactical-card space-y-6">
+
+          <div class="mb-4">
+            <div id="blockImageContainer" class="w-full">
+              <img id="blockImage" src="Resource_band/Color_Guard_seccion.jpeg" alt="Bloque" class="w-full h-48 object-cover border border-gold-brushed/20">
+            </div>
+          </div>
+
+          <div class="border-b border-gold-brushed/20 pb-3 flex items-center justify-between">
+            <span class="font-telemetry text-xs text-gold-primary tracking-widest uppercase">// METRIC TELEMETRY</span>
+            <i class="fa-solid fa-chart-simple text-gold-brushed"></i>
+          </div>
+
+          <!-- Dynamic Telemetry Metrics List -->
+          <div id="telemetryMetricsList" class="space-y-4">
+            <!-- Rendered via JS -->
+          </div>
+
+          <!-- Section Physical Load Gauge -->
+          <div class="pt-4 border-t border-white/10 space-y-2">
+            <div class="flex items-center justify-between font-telemetry text-xs">
+              <span class="text-stealth">CARGA AERÓBICA ESTIMADA:</span>
+              <span id="aerobicLoadText" class="text-gold-primary font-bold">HIGH (88%)</span>
+            </div>
+            <div class="w-full h-2 bg-obsidian border border-gold-brushed/30 overflow-hidden">
+              <div id="aerobicBar" class="h-full bg-gradient-to-r from-gold-brushed via-gold-primary to-crimson transition-all duration-700 w-[88%]"></div>
+            </div>
+          </div>
+
+          <!-- Micro Badge Note -->
+          <div class="bg-obsidian p-3 border-l-2 border-gold-primary font-telemetry text-[11px] text-stealth">
+            <strong class="text-white block mb-0.5">EVALUACIÓN CONTINUA:</strong>
+            Métricas sincronizadas con sensores inerciales IMU durante ejecuciones en vivo.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section id="institutional" class="institutional-section py-20 px-4 border-b border-gold-brushed/20 reveal-section">
+    <div class="max-w-7xl mx-auto">
+      <div class="institutional-heading grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-10">
+        <div class="lg:col-span-7">
+          <span class="font-telemetry text-xs text-gold-primary tracking-widest block uppercase">// RAVEN OPERATING SYSTEM</span>
+          <h2 class="font-display font-black text-5xl sm:text-7xl text-white uppercase tracking-wider leading-[0.9]">UNA IDENTIDAD.<br><span class="text-gold-primary">CUATRO FUERZAS.</span></h2>
+        </div>
+        <p class="lg:col-span-5 text-stealth text-sm sm:text-base leading-relaxed lg:pb-2">La banda se presenta como una compañía de performance: cada bloque tiene una función escénica propia, pero todos responden al mismo código de precisión, presencia y disciplina.</p>
+      </div>
+      <div class="institutional-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-gold-brushed/20">
+        <article class="institutional-card bg-void p-6 min-h-[250px] reveal-section"><span class="font-telemetry text-gold-primary text-xs">01 / ACERCA DE NOSOTROS</span><h3 class="font-display font-black text-3xl text-white uppercase mt-12 mb-3">Atletas del sonido</h3><p class="text-sm text-stealth leading-relaxed">Ravens convierte entrenamiento, música y movimiento en una experiencia de estadio con lenguaje propio.</p></article>
+        <article class="institutional-card bg-void p-6 min-h-[250px] reveal-section"><span class="font-telemetry text-gold-primary text-xs">02 / MISIÓN</span><h3 class="font-display font-black text-3xl text-white uppercase mt-12 mb-3">Ejecutar sin ruido</h3><p class="text-sm text-stealth leading-relaxed">Traducir cientos de horas de ensayo en una presentación limpia, potente y emocionalmente inolvidable.</p></article>
+        <article class="institutional-card bg-void p-6 min-h-[250px] reveal-section"><span class="font-telemetry text-gold-primary text-xs">03 / VISIÓN 2028</span><h3 class="font-display font-black text-3xl text-white uppercase mt-12 mb-3">Escala mundial</h3><p class="text-sm text-stealth leading-relaxed">Ser la referencia latinoamericana del formato Marching Band & Drum Corps Style, dentro y fuera del campo.</p></article>
+        <article class="institutional-card bg-void p-6 min-h-[250px] reveal-section"><span class="font-telemetry text-gold-primary text-xs">04 / RAVEN CODE</span><h3 class="font-display font-black text-3xl text-white uppercase mt-12 mb-3">Precisión. Resistencia.</h3><p class="text-sm text-stealth leading-relaxed">Disciplina, sinergia y respeto por el proceso: cuatro bloques operando como una sola mente.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="shows-repertoire" class="py-16 px-4 bg-obsidian border-t border-b border-gold-brushed/20">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="font-telemetry text-xs text-gold-primary tracking-widest block uppercase">// COMPETITION & SHOW PRODUCTIONS</span>
+        <h2 class="font-display font-black text-5xl text-white uppercase tracking-wider mb-3">
+          REPERTORIO & REPERTORIO TÁCTICO
+        </h2>
+        <p class="text-stealth text-sm sm:text-base">
+          Producciones de campo de nivel internacional con arreglos musicales a medida y gráficos de drill de alta complejidad.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Show Card 01 -->
+        <div class="bg-void border border-gold-brushed/30 p-6 clip-tactical-card hover:border-gold-primary transition-all group">
+          <div class="flex items-center justify-between text-xs font-telemetry text-gold-primary mb-3">
+            <span>SEASON 2025-2026</span>
+            <span class="px-2 py-0.5 bg-gold-primary/20 border border-gold-primary/40 rounded">FLAGSHIP</span>
+          </div>
+          <h3 class="font-display font-black text-3xl text-white group-hover:text-gold-primary transition-colors mb-2 uppercase">
+            FLIGHT OF THE RAVEN
+          </h3>
+          <p class="text-xs font-telemetry text-gold-brushed mb-4">
+            ARREGLOS: SINFÓNICO - METAL / TEMPO: 144 - 180 BPM
+          </p>
+          <p class="text-sm text-stealth mb-6 leading-relaxed">
+            Una narrativa sonora sobre el renacer y la conquista espacial. Incorpora solos de trompeta a 124 dB y giros síncronos de rifle a 8 cuentas.
+          </p>
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between font-telemetry text-xs text-stealth">
+            <span>DIFICULTAD DRILL: <strong class="text-gold-primary">9.8/10</strong></span>
+            <span>SETS: <strong class="text-white">64 MARCAS</strong></span>
+          </div>
+        </div>
+
+        <!-- Show Card 02 -->
+        <div class="bg-void border border-gold-brushed/30 p-6 clip-tactical-card hover:border-gold-primary transition-all group">
+          <div class="flex items-center justify-between text-xs font-telemetry text-gold-primary mb-3">
+            <span>SHOW DE ESTADIO</span>
+            <span class="px-2 py-0.5 bg-gold-primary/20 border border-gold-primary/40 rounded">LATIN RHYTHM</span>
+          </div>
+          <h3 class="font-display font-black text-3xl text-white group-hover:text-gold-primary transition-colors mb-2 uppercase">
+            KINETIC ECLIPSE
+          </h3>
+          <p class="text-xs font-telemetry text-gold-brushed mb-4">
+            ARREGLOS: JAZZ FUSION & PERCUSIÓN AFRO-CARIBE
+          </p>
+          <p class="text-sm text-stealth mb-6 leading-relaxed">
+            Megalomanía rítmica que exige cambios de aceleración en métricas complejas (7/8 y 5/4) combinados con patrones de marcha en abanico.
+          </p>
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between font-telemetry text-xs text-stealth">
+            <span>DIFICULTAD DRILL: <strong class="text-gold-primary">9.4/10</strong></span>
+            <span>SETS: <strong class="text-white">48 MARCAS</strong></span>
+          </div>
+        </div>
+
+        <!-- Show Card 03 -->
+        <div class="bg-void border border-gold-brushed/30 p-6 clip-tactical-card hover:border-gold-primary transition-all group">
+          <div class="flex items-center justify-between text-xs font-telemetry text-gold-primary mb-3">
+            <span>SHOW DE EXHIBICIÓN</span>
+            <span class="px-2 py-0.5 bg-gold-primary/20 border border-gold-primary/40 rounded">HIGH POWER</span>
+          </div>
+          <h3 class="font-display font-black text-3xl text-white group-hover:text-gold-primary transition-colors mb-2 uppercase">
+            DARK MATTER OVERDRIVE
+          </h3>
+          <p class="text-xs font-telemetry text-gold-brushed mb-4">
+            ARREGLOS: BANDA MILITAR MODERNA & ELECTRÓNICA
+          </p>
+          <p class="text-sm text-stealth mb-6 leading-relaxed">
+            Muro de sonido ininterrumpido a máxima potencia con duelos de batería y despliegues visuales luminosos de la guardia de color.
+          </p>
+          <div class="pt-4 border-t border-white/10 flex items-center justify-between font-telemetry text-xs text-stealth">
+            <span>DIFICULTAD DRILL: <strong class="text-gold-primary">9.6/10</strong></span>
+            <span>SETS: <strong class="text-white">52 MARCAS</strong></span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="auditions" class="py-20 px-4 max-w-5xl mx-auto w-full">
+    <div class="bg-obsidian border-2 border-gold-primary p-8 sm:p-12 clip-tactical-card relative shadow-gold-glow">
+      
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="font-telemetry text-xs text-gold-primary tracking-widest block uppercase">// JOIN THE FLOCK</span>
+        <h2 class="font-display font-black text-4xl sm:text-5xl text-white uppercase tracking-wider mb-2">
+          MATRIZ DE AUDICIÓN & RECLUTAMIENTO
+        </h2>
+        <p class="text-stealth text-sm">
+          ¿Tienes la preparación física y la disciplina musical para marchar con los Ravens? Postula tu sección.
+        </p>
+      </div>
+
+      <form id="auditionForm" onsubmit="handleAuditionSubmit(event)" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-telemetry text-xs text-gold-brushed mb-1 uppercase">NOMBRE COMPLETO *</label>
+            <input type="text" required placeholder="Ej. Alexander Vance" class="w-full bg-void border border-gold-brushed/30 p-3 text-white font-sans text-sm focus:border-gold-primary focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-telemetry text-xs text-gold-brushed mb-1 uppercase">CORREO ELECTRÓNICO *</label>
+            <input type="email" required placeholder="vance@ravensband.org" class="w-full bg-void border border-gold-brushed/30 p-3 text-white font-sans text-sm focus:border-gold-primary focus:outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-telemetry text-xs text-gold-brushed mb-1 uppercase">BLOQUE OBJETIVO *</label>
+            <select required class="w-full bg-void border border-gold-brushed/30 p-3 text-white font-sans text-sm focus:border-gold-primary focus:outline-none">
+              <option value="colorguard">COLOR GUARD (Guardia de Color)</option>
+              <option value="percussion">PERCUSIÓN (Snare / Tenors / Bass)</option>
+              <option value="brass">VIENTOS (Trompeta / Mello / Tuba / Barítono)</option>
+              <option value="drummajor">BASTÓN MAYOR (Conducción / Podio)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-telemetry text-xs text-gold-brushed mb-1 uppercase">AÑOS DE EXPERIENCIA MARCHANDO</label>
+            <select class="w-full bg-void border border-gold-brushed/30 p-3 text-white font-sans text-sm focus:border-gold-primary focus:outline-none">
+              <option value="1">1 - 2 Años</option>
+              <option value="3">3 - 5 Años</option>
+              <option value="5+">Más de 5 Años (Nivel Competencia)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-telemetry text-xs text-gold-brushed mb-1 uppercase">MENSAJE / PERFIL TÉCNICO</label>
+          <textarea rows="3" placeholder="Describe tu formación instrumental, lectura de partituras o experiencia en Drill Matrix..." class="w-full bg-void border border-gold-brushed/30 p-3 text-white font-sans text-sm focus:border-gold-primary focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <span class="font-telemetry text-[11px] text-stealth">STATUS: REGISTRO TÁCTICO ABIERTO</span>
+          <button type="submit" class="clip-tactical-btn bg-gold-primary hover:bg-white text-black font-display font-black px-8 py-3 text-lg tracking-wider transition-all shadow-gold-glow cursor-pointer">
+            ENVIAR SOLICITUD DE AUDICIÓN
+          </button>
+        </div>
+      </form>
+
+      <!-- Custom Toast Feedback Notification Banner -->
+      <div id="toastNotification" class="hidden mt-6 p-4 bg-emerald-950/80 border border-emerald-500 text-emerald-300 font-telemetry text-xs flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-circle-check text-base text-emerald-400"></i>
+          <span>¡SOLICITUD TÁCTICA RECIBIDA! EL CUERPO TÉCNICO EVALUARÁ TU PERFIL EN BREVE.</span>
+        </div>
+        <button onclick="hideToast()" class="text-emerald-400 font-bold ml-4">X</button>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="py-16 px-4 bg-void border-t border-b border-gold-brushed/20 relative overflow-hidden">
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      <i class="fa-solid fa-quote-left text-4xl text-gold-primary/30 mb-4 block"></i>
+      <blockquote class="font-display font-black text-3xl sm:text-5xl text-white uppercase tracking-wide leading-tight mb-6">
+        "CERO MARGEN DE ERROR. CUATRO BLOQUES, UNA SOLA MENTE. <br class="hidden sm:inline"/>
+        <span class="text-gold-primary">EL MOVIMIENTO ES MÚSICA, LA MÚSICA ES DISCIPLINA.</span>"
+      </blockquote>
+      <div class="font-telemetry text-xs text-stealth tracking-widest uppercase">
+        — CUERPO TÉCNICO & DIRECCIÓN GENERAL | RAVENS MARCHING BAND
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-obsidian border-t border-gold-brushed/30 py-12 px-4 text-stealth font-sans text-sm">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-gold-primary/10 border border-gold-primary text-gold-primary flex items-center justify-center font-black text-lg clip-tactical-btn">
+          <i class="fa-solid fa-crow"></i>
+        </div>
+        <div>
+          <span class="font-display font-black text-lg text-white uppercase tracking-wider block">RAVENS MARCHING BAND</span>
+          <span class="font-telemetry text-[10px] text-stealth block">PROTOTIPO WEB DE ALTA PERFORMANCE UI/UX</span>
+        </div>
+      </div>
+
+      <div class="font-telemetry text-xs text-center md:text-right space-y-1">
+        <p class="text-white">&copy; 2026 RAVENS MARCHING BAND. TODOS LOS DERECHOS RESERVADOS.</p>
+        <p class="text-stealth">DISEÑADO BAJO CONCEPTO KINETIC ELITE &bull; DARK MODE ABSOLUTO</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    const blockData = {
+      colorguard: {
+        number: "01",
+        title: "COLOR GUARD",
+        image: "Resource_band/Color_Guard_seccion.jpeg",
+        badge: "ARTES CINÉTICAS",
+        tagline: '"Velocidad, flexibilidad e impacto visual cinético"',
+        description: "Extensión visual de la música. Encargadas de traducir frecuencias y dinámicas musicales en movimiento espacial continuo mediante el manejo experto de banderas, rifles de peso oficial y sables de acero.",
+        aerobicLoad: "HIGH (88%)",
+        aerobicValue: "88%",
+        metrics: [
+          { label: "TOSS TIMING ACCURACY", value: "< 0.02 s", note: "Margen de error en lanzamientos sincronizados" },
+          { label: "VELOCIDAD ROTACIONAL", value: "720 deg/s", note: "Velocidad angular máxima en giros de rifle" },
+          { label: "PESO BALANCEADO SABLE", value: "950 gramos", note: "Acero inoxidable para estabilidad en giros altos" },
+          { label: "COBERTURA ESPACIAL", value: "360° ARENA", note: "Proyección direccional constante" }
+        ],
+        equipment: [
+          { name: "Banderas Ripstop", spec: "36\" x 60\" Seda liviana", icon: "fa-flag" },
+          { name: "Rifles Elite 39\"", spec: "Madera tratada contrapesada", icon: "fa-crosshairs" },
+          { name: "Sabres de Acero", spec: "Hoja de 34\" ultra balanceada", icon: "fa-shield-halved" }
+        ],
+        audioType: "swish"
+      },
+      percussion: {
+        number: "02",
+        title: "PERCUSIÓN (BATTERY)",
+        image: "Resource_band/percusion_sesion.jpeg",
+        badge: "MOTOR RÍTMICO",
+        tagline: '"Ataque incisivo, subdivisión estricta y métrica absoluta"',
+        description: "El corazón rítmico y columna vertebral de la banda. Proporciona la estructura temporal de alta velocidad, los acentos de impacto y la subdivisión métrica militar sin fluctuaciones.",
+        aerobicLoad: "MAX (95%)",
+        aerobicValue: "95%",
+        metrics: [
+          { label: "VELOCIDAD DE ATAQUE", value: "180 BPM", note: "Subdivisión continua en fusas y semicorcheas" },
+          { label: "PRESIÓN SONORA DB", value: "124 dB", note: "Impacto acústico directo en línea frontal" },
+          { label: "TENSIÓN PARCHES KEVLAR", value: "+30,000 PSI", note: "Respuesta de rebote instantánea" },
+          { label: "CADENCE SYNC RATE", value: "99.9%", note: "Alineación de baqueteo en redoblantes" }
+        ],
+        equipment: [
+          { name: "Snare Kevlar", spec: "Vaso de arce / aro de fundición", icon: "fa-drum" },
+          { name: "Multitoms Quads", spec: "Configuración 6 tambores", icon: "fa-layer-group" },
+          { name: "Bass Drums Tónicos", spec: "Sistema de 5 bombos afinados", icon: "fa-circle-dot" }
+        ],
+        audioType: "snare"
+      },
+      brass: {
+        number: "03",
+        title: "VIENTOS (BRASS & REEDS)",
+        images: ["Resource_band/Trumpet_seccion.jpeg", "Resource_band/Reed_sesion.jpeg"],
+        badge: "PARED ACÚSTICA",
+        tagline: '"Proyección armónica, cuerpo tímbrico y pared de aire"',
+        description: "El componente melódico y armónico principal. Exige una capacidad pulmonar de nivel atleta olímpico para proyectar un sonido cálido, potente y frontal mientras se marcha a alta velocidad.",
+        aerobicLoad: "HIGH (92%)",
+        aerobicValue: "92%",
+        metrics: [
+          { label: "CAPACIDAD VITAL PULMONAR", value: "6.0 Litros", note: "Sostenimiento de aire a máxima intensidad" },
+          { label: "RANGO TÍMBRICO", value: "4 Octavas", note: "Cobertura de frecuencias graves y agudas" },
+          { label: "MARCHING CADENCE", value: "120-160 steps/m", note: "Desplazamiento con alineación de campana 90°" },
+          { label: "AIR SUPPORT TIME", value: "16 tiempos", note: "Fraseo continuo sin vacilación de afinación" }
+        ],
+        equipment: [
+          { name: "Mellophones F", spec: "Proyección frontal direccional", icon: "fa-bullhorn" },
+          { name: "Marching Baritones", spec: "Tubería ancha para graves cálidos", icon: "fa-compact-disc" },
+          { name: "Sousaphones 26\"", spec: "Fibra/latón de alto impacto", icon: "fa-record-vinyl" }
+        ],
+        audioType: "brass"
+      },
+      drummajor: {
+        number: "04",
+        title: "BASTÓN MAYOR (DRUM MAJOR)",
+        image: "Resource_band/Baston_major.jpeg",
+        imageFit: "contain",
+        badge: "COMANDO TÁCTICO",
+        tagline: '"Liderazgo de campo, control de tempo y conducción"',
+        description: "El Comandante General en el campo. Responsable de la estabilidad del reloj rítmico, la conducción dramática del show y la ejecución impecable de arranques y cortes dinámicos.",
+        aerobicLoad: "MODERATE (80%)",
+        aerobicValue: "80%",
+        metrics: [
+          { label: "CLOCK PRECISION", value: "±0.01 BPM", note: "Estabilidad de metrónomo humano" },
+          { label: "FIELD COVERAGE", value: "100 METROS", note: "Visibilidad de marcas de dirección" },
+          { label: "POTENCIA DE SILBATO", value: "120 dB", note: "Corte de frecuencia Fox 40 Sonik" },
+          { label: "PATTERN CLARITY", value: "4/4, 3/4, 7/8", note: "Legibilidad de esquema de compás" }
+        ],
+        equipment: [
+          { name: "Podio Mecánico", spec: "Estructura elevada de aluminio", icon: "fa-cubes" },
+          { name: "Silbato Fox 40", spec: "Frecuencia de penetrate alto dB", icon: "fa-bullhorn" },
+          { name: "Mando & Guantes", spec: "Acabados dorados reflectivos", icon: "fa-hand-sparkles" }
+        ],
+        audioType: "whistle"
+      }
+    };
+
+    let activeBlockKey = 'colorguard';
+    let currentBpm = 144;
+    let metronomeActive = false;
+    let metronomeIntervalId = null;
+
+    const scrollProgress = document.getElementById('scrollProgress');
+    const revealObserver = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('is-visible');
+      });
+    }, { threshold: 0.12 }) : null;
+
+    document.querySelectorAll('.reveal-section').forEach((section) => {
+      if (revealObserver) revealObserver.observe(section);
+      else section.classList.add('is-visible');
+    });
+
+    function updateScrollProgress() {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+      if (scrollProgress) scrollProgress.style.width = `${progress}%`;
+    }
+
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    updateScrollProgress();
+
+    window.addEventListener('pointermove', (event) => {
+      document.documentElement.style.setProperty('--pointer-x', event.clientX - window.innerWidth / 2);
+      document.documentElement.style.setProperty('--pointer-y', event.clientY - window.innerHeight / 2);
+    }, { passive: true });
+
+    function toggleCommandNav() {
+      const drawer = document.getElementById('commandNavDrawer');
+      const panel = document.getElementById('navPanel');
+      const isHidden = drawer.classList.contains('pointer-events-none');
+
+      if (isHidden) {
+        drawer.classList.remove('pointer-events-none', 'opacity-0');
+        drawer.classList.add('opacity-100');
+        panel.classList.remove('translate-x-full');
+      } else {
+        drawer.classList.add('pointer-events-none', 'opacity-0');
+        drawer.classList.remove('opacity-100');
+        panel.classList.add('translate-x-full');
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const drawer = document.getElementById('commandNavDrawer');
+        if (!drawer.classList.contains('pointer-events-none')) {
+          toggleCommandNav();
+        }
+      }
+    });
+
+    function toggleNavAccordion(accId) {
+      const content = document.getElementById(`${accId}-content`);
+      const icon = document.getElementById(`${accId}-icon`);
+      const isOpen = !content.classList.contains('hidden');
+
+      for (let i = 1; i <= 5; i++) {
+        const c = document.getElementById(`acc${i}-content`);
+        const ic = document.getElementById(`acc${i}-icon`);
+        if (c) c.classList.add('hidden');
+        if (ic) ic.classList.remove('rotate-180');
+      }
+
+      if (!isOpen) {
+        content.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+      }
+    }
+
+    function selectBlock(key) {
+      activeBlockKey = key;
+      const data = blockData[key];
+
+      const keys = ['colorguard', 'percussion', 'brass', 'drummajor'];
+      keys.forEach(k => {
+        const btn = document.getElementById(`btn-${k}`);
+        if (k === key) {
+          btn.className = "block-tab-btn clip-tactical-btn py-4 px-4 bg-gold-primary text-black font-display font-black text-xl tracking-wider uppercase border border-gold-primary transition-all flex flex-col items-center gap-1 shadow-gold-glow";
+        } else {
+          btn.className = "block-tab-btn clip-tactical-btn py-4 px-4 bg-void text-white font-display font-bold text-xl tracking-wider uppercase border border-gold-brushed/30 hover:border-gold-primary transition-all flex flex-col items-center gap-1";
+        }
+      });
+
+      document.getElementById('blockNumber').innerText = data.number;
+      document.getElementById('blockBadge').innerText = data.badge;
+      document.getElementById('blockTitle').innerText = data.title;
+      document.getElementById('blockTagline').innerText = data.tagline;
+      document.getElementById('blockDescription').innerText = data.description;
+      document.getElementById('aerobicLoadText').innerText = `${data.aerobicLoad}`;
+      document.getElementById('aerobicBar').style.width = data.aerobicValue;
+
+      // Update section image(s) if present
+      const imgContainer = document.getElementById('blockImageContainer');
+      if (imgContainer) {
+        if (data.images && data.images.length) {
+          // render grid of images
+          imgContainer.innerHTML = `<div class="block-image-grid flex gap-2">${data.images.map(src => `\n              <img src="${src}" alt="${data.title || ''}" class="block-image"/>`).join('')}\n            </div>`;
+        } else {
+          const fitClass = data.imageFit === 'contain' ? 'contain' : '';
+          const src = data.image || 'images/placeholder.jpg';
+          imgContainer.innerHTML = `<img src="${src}" alt="${data.title || ''}" class="block-image ${fitClass}"/>`;
+        }
+      }
+
+      const equipGrid = document.getElementById('equipmentGrid');
+      equipGrid.innerHTML = data.equipment.map(eq => `
+        <div class="bg-void border border-gold-brushed/20 p-3 text-left">
+          <i class="fa-solid ${eq.icon} text-gold-primary text-base mb-1.5 block"></i>
+          <span class="font-display font-bold text-sm text-white block uppercase">${eq.name}</span>
+          <span class="font-telemetry text-[11px] text-stealth block">${eq.spec}</span>
+        </div>
+      `).join('');
+
+      const metricsList = document.getElementById('telemetryMetricsList');
+      metricsList.innerHTML = data.metrics.map(m => `
+        <div class="border-b border-white/5 pb-2">
+          <div class="flex items-center justify-between font-telemetry text-xs mb-0.5">
+            <span class="text-stealth">${m.label}</span>
+            <span class="text-gold-primary font-bold text-sm">${m.value}</span>
+          </div>
+          <span class="text-[10px] text-stealth/80 block">${m.note}</span>
+        </div>
+      `).join('');
+
+      stopSynthAudio();
+    }
+
+    let audioCtx = null;
+    let isPlayingAudio = false;
+    let activeOscillators = [];
+    let waveformAnimId = null;
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function triggerSectionAudio() {
+      initAudioContext();
+
+      if (isPlayingAudio) {
+        stopSynthAudio();
+        return;
+      }
+
+      isPlayingAudio = true;
+      document.getElementById('playAudioIcon').className = "fa-solid fa-square";
+      document.getElementById('playAudioLabel').innerText = "DETENER MUESTRA";
+      document.getElementById('audioStatusText').innerText = "REPRODUCIENDO SINTETIZADOR";
+      document.getElementById('audioStatusText').className = "font-telemetry text-[10px] text-gold-primary font-bold hud-pulse";
+
+      const data = blockData[activeBlockKey];
+      
+      if (data.audioType === 'snare') {
+        playSnarePattern();
+      } else if (data.audioType === 'brass') {
+        playBrassFanfare();
+      } else if (data.audioType === 'swish') {
+        playSwishEffect();
+      } else if (data.audioType === 'whistle') {
+        playWhistleTempo();
+      }
+
+      startWaveformAnimation();
+    }
+
+    function stopSynthAudio() {
+      isPlayingAudio = false;
+      activeOscillators.forEach(osc => {
+        try { osc.stop(); } catch(e){}
+      });
+      activeOscillators = [];
+
+      if (waveformAnimId) cancelAnimationFrame(waveformAnimId);
+
+      document.getElementById('playAudioIcon').className = "fa-solid fa-play";
+      document.getElementById('playAudioLabel').innerText = "ESCUCHAR STEM TÁCTICO";
+      document.getElementById('audioStatusText').innerText = "EN ESPERA";
+      document.getElementById('audioStatusText').className = "font-telemetry text-[10px] text-stealth";
+
+      clearWaveformCanvas();
+    }
+
+    function playSnarePattern() {
+      const now = audioCtx.currentTime;
+      for (let i = 0; i < 16; i++) {
+        const time = now + (i * 0.12);
+        const bufferSize = audioCtx.sampleRate * 0.05;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const output = buffer.getChannelData(0);
+        for (let j = 0; j < bufferSize; j++) {
+          output[j] = Math.random() * 2 - 1;
+        }
+
+        const whiteNoise = audioCtx.createBufferSource();
+        whiteNoise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(1200, time);
+
+        const gain = audioCtx.createGain();
+        const vol = (i % 4 === 0) ? 0.9 : 0.35;
+        gain.gain.setValueAtTime(vol, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.04);
+
+        whiteNoise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        whiteNoise.start(time);
+        whiteNoise.stop(time + 0.05);
+      }
+
+      setTimeout(() => { if(isPlayingAudio) stopSynthAudio(); }, 2200);
+    }
+
+    function playBrassFanfare() {
+      const now = audioCtx.currentTime;
+      const freqs = [220, 277.18, 329.63, 440];
+
+      freqs.forEach(f => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(f, now);
+
+        gain.gain.setValueAtTime(0.01, now);
+        gain.gain.linearRampToValueAtTime(0.2, now + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 1.8);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 1.8);
+        activeOscillators.push(osc);
+      });
+
+      setTimeout(() => { if(isPlayingAudio) stopSynthAudio(); }, 1900);
+    }
+
+    function playSwishEffect() {
+      const now = audioCtx.currentTime;
+      const bufferSize = audioCtx.sampleRate * 0.8;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(300, now);
+      filter.frequency.exponentialRampToValueAtTime(2500, now + 0.4);
+      filter.frequency.exponentialRampToValueAtTime(400, now + 0.8);
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.5, now + 0.4);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      noise.start(now);
+      noise.stop(now + 0.8);
+
+      setTimeout(() => { if(isPlayingAudio) stopSynthAudio(); }, 1000);
+    }
+
+    function playWhistleTempo() {
+      const now = audioCtx.currentTime;
+      for (let i = 0; i < 4; i++) {
+        const time = now + (i * 0.4);
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(2800, time);
+
+        gain.gain.setValueAtTime(0.5, time);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + 0.15);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(time);
+        osc.stop(time + 0.15);
+      }
+
+      setTimeout(() => { if(isPlayingAudio) stopSynthAudio(); }, 1800);
+    }
+
+    function clearWaveformCanvas() {
+      const canvas = document.getElementById('waveformCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle = '#D4AF37';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height / 2);
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+    }
+
+    function startWaveformAnimation() {
+      const canvas = document.getElementById('waveformCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let step = 0;
+
+      function render() {
+        if (!isPlayingAudio) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        const sliceWidth = canvas.width / 50;
+        let x = 0;
+
+        for (let i = 0; i < 50; i++) {
+          const v = Math.sin((i + step) * 0.3) * (Math.random() * 0.8 + 0.2);
+          const y = (v * (canvas.height / 2.5)) + (canvas.height / 2);
+
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+
+          x += sliceWidth;
+        }
+
+        ctx.stroke();
+        step += 1;
+        waveformAnimId = requestAnimationFrame(render);
+      }
+
+      render();
+    }
+
+    const drillCanvas = document.getElementById('drillCanvas');
+    const drillCtx = drillCanvas ? drillCanvas.getContext('2d') : null;
+
+    let drillMarchers = [];
+    let currentFormation = 'diamond';
+    let currentCountStep = 1;
+    let fieldCenterX = 0.5;
+    let fieldCenterY = 0.5;
+
+    function initMarchers() {
+      drillMarchers = [];
+      const total = 128;
+
+      for (let i = 0; i < total; i++) {
+        let sectionColor = '#FFD700';
+        if (i < 24) sectionColor = '#FBBF24';
+        else if (i < 56) sectionColor = '#EF4444';
+        else if (i === 127) sectionColor = '#FFFFFF';
+
+        drillMarchers.push({
+          x: Math.random(),
+          y: Math.random(),
+          targetX: 0.5,
+          targetY: 0.5,
+          color: sectionColor,
+          size: i === 127 ? 6 : 3.5
+        });
+      }
+      calculateFormationPositions();
+    }
+
+    function calculateFormationPositions() {
+      const count = drillMarchers.length;
+      
+      drillMarchers.forEach((m, idx) => {
+        if (currentFormation === 'diamond') {
+          const angle = (idx / count) * Math.PI * 2;
+          const rx = 0.35 * Math.cos(angle);
+          const ry = 0.35 * Math.sin(angle);
+          m.targetX = fieldCenterX + rx;
+          m.targetY = fieldCenterY + ry;
+        } else if (currentFormation === 'wedge') {
+          const side = idx % 2 === 0 ? 1 : -1;
+          const row = Math.floor(idx / 2);
+          m.targetX = fieldCenterX + (side * row * 0.006);
+          m.targetY = (fieldCenterY - 0.25) + (row * 0.011);
+        } else if (currentFormation === 'star') {
+          const arm = idx % 5;
+          const dist = Math.floor(idx / 5) * 0.015;
+          const angle = (arm * (Math.PI * 2 / 5));
+          m.targetX = fieldCenterX + Math.cos(angle) * dist;
+          m.targetY = fieldCenterY + Math.sin(angle) * dist;
+        } else if (currentFormation === 'box') {
+          const col = idx % 16;
+          const row = Math.floor(idx / 16);
+          m.targetX = (fieldCenterX - 0.3) + (col * 0.04);
+          m.targetY = (fieldCenterY - 0.25) + (row * 0.07);
+        } else if (currentFormation === 'spiral') {
+          const angle = idx * 0.2;
+          const radius = idx * 0.0028;
+          m.targetX = fieldCenterX + Math.cos(angle) * radius;
+          m.targetY = fieldCenterY + Math.sin(angle) * radius;
+        }
+      });
+    }
+
+    function setDrillFormation(formation) {
+      currentFormation = formation;
+      const textMap = {
+        diamond: 'DIAMOND OPENING',
+        wedge: 'CASCADE WEDGE',
+        star: 'ROTATING STAR',
+        box: 'BOX SPREAD',
+        spiral: 'KINETIC SPIRAL'
+      };
+      document.getElementById('currentFormationText').innerText = textMap[formation];
+      
+      ['diamond', 'wedge', 'star', 'box', 'spiral'].forEach(f => {
+        const btn = document.getElementById(`btn-f-${f}`);
+        if (btn) {
+          if (f === formation) {
+            btn.className = "drill-btn px-3 py-1.5 bg-gold-primary text-black font-bold clip-tactical-btn";
+          } else {
+            btn.className = "drill-btn px-3 py-1.5 bg-void border border-gold-brushed text-white hover:border-gold-primary clip-tactical-btn";
+          }
+        }
+      });
+
+      calculateFormationPositions();
+    }
+
+    if (drillCanvas) {
+      drillCanvas.addEventListener('click', (e) => {
+        const rect = drillCanvas.getBoundingClientRect();
+        fieldCenterX = (e.clientX - rect.left) / rect.width;
+        fieldCenterY = (e.clientY - rect.top) / rect.height;
+        calculateFormationPositions();
+      });
+    }
+
+    function renderDrillCanvas() {
+      if (!drillCanvas || !drillCtx) return;
+
+      if (drillCanvas.width !== drillCanvas.clientWidth || drillCanvas.height !== drillCanvas.clientHeight) {
+        drillCanvas.width = drillCanvas.clientWidth;
+        drillCanvas.height = drillCanvas.clientHeight;
+      }
+
+      const w = drillCanvas.width;
+      const h = drillCanvas.height;
+
+      drillCtx.fillStyle = '#050608';
+      drillCtx.fillRect(0, 0, w, h);
+
+      drillCtx.strokeStyle = 'rgba(212, 175, 55, 0.12)';
+      drillCtx.lineWidth = 1;
+
+      for (let x = 0; x <= w; x += w / 10) {
+        drillCtx.beginPath();
+        drillCtx.moveTo(x, 0);
+        drillCtx.lineTo(x, h);
+        drillCtx.stroke();
+      }
+
+      for (let y = 0; y <= h; y += h / 6) {
+        drillCtx.beginPath();
+        drillCtx.moveTo(0, y);
+        drillCtx.lineTo(w, y);
+        drillCtx.stroke();
+      }
+
+      drillCtx.strokeStyle = 'rgba(255, 215, 0, 0.3)';
+      drillCtx.beginPath();
+      drillCtx.moveTo(w / 2, 0);
+      drillCtx.lineTo(w / 2, h);
+      drillCtx.stroke();
+
+      const speedFactor = 0.03 + (currentBpm / 2000);
+
+      drillMarchers.forEach(m => {
+        m.x += (m.targetX - m.x) * speedFactor;
+        m.y += (m.targetY - m.y) * speedFactor;
+
+        const posX = m.x * w;
+        const posY = m.y * h;
+
+        drillCtx.fillStyle = m.color;
+        drillCtx.beginPath();
+        drillCtx.arc(posX, posY, m.size, 0, Math.PI * 2);
+        drillCtx.fill();
+
+        drillCtx.strokeStyle = m.color;
+        drillCtx.globalAlpha = 0.3;
+        drillCtx.beginPath();
+        drillCtx.arc(posX, posY, m.size + 2, 0, Math.PI * 2);
+        drillCtx.stroke();
+        drillCtx.globalAlpha = 1.0;
+      });
+
+      requestAnimationFrame(renderDrillCanvas);
+    }
+
+    function updateBpmTempo(val) {
+      currentBpm = parseInt(val);
+      document.getElementById('bpmSliderVal').innerText = `${currentBpm} BPM`;
+      document.getElementById('liveBpm').innerText = `${currentBpm} BPM`;
+      document.getElementById('cardBpmVal').innerText = `${currentBpm} BPM`;
+
+      if (metronomeActive) {
+        restartMetronome();
+      }
+    }
+
+    function toggleMetronomeAudio() {
+      initAudioContext();
+      metronomeActive = !metronomeActive;
+
+      const label = document.getElementById('metronomeLabel');
+      const btn = document.getElementById('metronomeBtn');
+
+      if (metronomeActive) {
+        label.innerText = "METRÓNOMO ACTIVO";
+        btn.className = "clip-tactical-btn px-3 py-1 bg-gold-primary text-black font-bold transition-all flex items-center gap-1.5 shadow-gold-glow";
+        startMetronome();
+      } else {
+        label.innerText = "METRÓNOMO AUDIO";
+        btn.className = "clip-tactical-btn px-3 py-1 bg-void border border-gold-primary text-gold-primary hover:bg-gold-primary hover:text-black font-bold transition-all flex items-center gap-1.5";
+        stopMetronome();
+      }
+    }
+
+    function startMetronome() {
+      stopMetronome();
+      const intervalMs = (60 / currentBpm) * 1000;
+
+      metronomeIntervalId = setInterval(() => {
+        playMetronomeClick();
+
+        currentCountStep = (currentCountStep % 16) + 1;
+        const formatted = currentCountStep < 10 ? `0${currentCountStep}` : `${currentCountStep}`;
+        
+        const countBadge = document.getElementById('stepCounterBadge');
+        if (countBadge) countBadge.innerText = `COUNT ${formatted} / 16`;
+
+        const liveCount = document.getElementById('liveCount');
+        if (liveCount) liveCount.innerText = `COUNT ${formatted}`;
+      }, intervalMs);
+    }
+
+    function stopMetronome() {
+      if (metronomeIntervalId) {
+        clearInterval(metronomeIntervalId);
+        metronomeIntervalId = null;
+      }
+    }
+
+    function restartMetronome() {
+      if (metronomeActive) {
+        startMetronome();
+      }
+    }
+
+    function playMetronomeClick() {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      const isAccent = (currentCountStep % 4 === 1);
+      osc.frequency.setValueAtTime(isAccent ? 1200 : 800, now);
+
+      gain.gain.setValueAtTime(isAccent ? 0.4 : 0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.05);
+    }
+
+    function handleAuditionSubmit(event) {
+      event.preventDefault();
+      const toast = document.getElementById('toastNotification');
+      toast.classList.remove('hidden');
+      document.getElementById('auditionForm').reset();
+
+      setTimeout(() => {
+        hideToast();
+      }, 6000);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('toastNotification');
+      if (toast) toast.classList.add('hidden');
+    }
+
+    // WhatsApp chat integration
+    // Replace WHATSAPP_NUMBER with your full international number (no + or dashes), e.g. 5491123456789
+    const WHATSAPP_NUMBER = '';
+    function openWhatsAppChat(prefillMessage) {
+      const message = prefillMessage || 'Hola, quiero hablar con la banda. ¿Me pueden ayudar?';
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    }
+
+    window.onload = function() {
+      selectBlock('colorguard');
+      clearWaveformCanvas();
+      initMarchers();
+      renderDrillCanvas();
+
+      setInterval(() => {
+        const db = (117 + Math.random() * 3.5).toFixed(1);
+        const liveDbElem = document.getElementById('liveDb');
+        if (liveDbElem) liveDbElem.innerText = `${db} dB`;
+      }, 2000);
+    };
+  </script>
+
+  <!-- WhatsApp Floating Button -->
+  <button id="waButton" aria-label="Chatear por WhatsApp" class="whatsapp-fab" onclick="openWhatsAppChat()">
+    <i class="fa-brands fa-whatsapp"></i>
+    <span class="wa-text">Chatear con la banda</span>
+  </button>
+</body>
+</html>

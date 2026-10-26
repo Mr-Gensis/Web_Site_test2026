@@ -1,0 +1,128 @@
+body {
+  background-color: #020203;
+  color: #F8F9FA;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+::selection { background: #FFD700; color: #020203; }
+
+.scroll-progress { position: fixed; inset: 0 auto auto 0; width: 0; height: 3px; background: #FFD700; box-shadow: 0 0 18px rgba(255, 215, 0, 0.8); z-index: 100; pointer-events: none; }
+.reveal-section { opacity: 0; transform: translateY(28px); transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), transform 700ms cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal-section.is-visible { opacity: 1; transform: translateY(0); }
+.institutional-section { background: radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.08), transparent 32%), #020203; }
+.institutional-heading { transform: translateX(calc(var(--pointer-x, 0) * 0.015px)); }
+.institutional-card { position: relative; overflow: hidden; transition: background-color 350ms ease, transform 350ms cubic-bezier(0.16, 1, 0.3, 1); }
+.institutional-card::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: 2px; background: #FFD700; transform: scaleX(0); transform-origin: left; transition: transform 450ms cubic-bezier(0.16, 1, 0.3, 1); }
+.institutional-card:hover { background-color: #0B0C10; transform: translateY(-6px); }
+.institutional-card:hover::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .reveal-section { opacity: 1; transform: none; }
+}
+
+/* Grid Overlay & Field Lines Background */
+.tactical-grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Diagonal Tactical Cut Outs (Clip Paths) */
+.clip-tactical-card {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+}
+
+.clip-tactical-btn {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+.clip-badge {
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #020203;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FFD700;
+}
+
+@keyframes hudPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.95); }
+}
+.hud-pulse {
+  animation: hudPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes stepPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.step-active {
+  animation: stepPulse 0.2s ease-out;
+}
+
+/* Glowing Utilities */
+.gold-border-glow {
+  border-color: #FFD700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+/* WhatsApp floating button */
+.whatsapp-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.18), 0 2px 6px rgba(0,0,0,0.5);
+  cursor: pointer;
+  z-index: 60;
+  font-weight: 700;
+}
+.whatsapp-fab i { font-size: 20px; }
+.whatsapp-fab .wa-text { font-size: 14px; }
+.whatsapp-fab:hover { transform: translateY(-3px); }
+
+@media (max-width: 640px) {
+  .whatsapp-fab .wa-text { display: none; }
+}
+
+/* Hero video layering tweaks */
+/* Hero video full-size */
+#heroVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+/* Dark overlay should sit above video */
+.hero-overlay { z-index: 1; }
+.hero-content { z-index: 2; position: relative; }
+
+/* Block image styles */
+#blockImage { display: block; border-radius: 4px; }
+.block-image { width: 100%; height: 12rem; object-fit: cover; border: 1px solid rgba(212,175,55,0.12); border-radius: 4px; }
+.block-image.contain { object-fit: contain; background: #000; }
+.block-image-grid img { width: 49%; }
+
+@media (max-width: 640px) {
+  .block-image { height: 10rem; }
+  .block-image-grid { display: flex; flex-direction: column; gap: 0.5rem; }
+  .block-image-grid img { width: 100%; }
+}
